@@ -31,9 +31,9 @@ stages: [build]
 
 build-image:
   stage: build
-  image: docker:27-cli
+  image: docker:28-cli
   services:
-    - name: docker:27-dind
+    - name: docker:28-dind
       alias: docker
   variables:
     DOCKER_HOST: tcp://docker:2375/
