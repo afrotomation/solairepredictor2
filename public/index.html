@@ -4,10 +4,10 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="color-scheme" content="dark light" />
-		<title>Solaire Predictor — Energy &amp; economic forecasts via FastAPI</title>
+		<title>Solaire Predictor — the forecasting engine behind Solaire</title>
 		<meta
 			name="description"
-			content="A FastAPI service that predicts electricity usage, GDP, population and electrification rate for 54 African countries, from World Bank historical data using scikit-learn regression."
+			content="The prediction engine behind Solaire, an M.S. capstone solar-energy platform. A FastAPI service forecasting electricity usage, GDP, population and electrification rate for 54 African countries, from World Bank data using scikit-learn regression."
 		/>
 		<link
 			rel="icon"
@@ -186,18 +186,25 @@
 			</header>
 
 			<section class="hero">
-				<span class="pill">FastAPI · scikit-learn · World Bank data</span>
+				<span class="pill">Prediction engine for Solaire · FastAPI · scikit-learn</span>
 				<h1>Forecast a country's energy and economy.</h1>
 				<p>
-					Solaire Predictor is a small FastAPI service that predicts six metrics
-					— electricity usage, GDP total, GDP growth, population, population
-					growth, and electrification rate — for any of the
-					<strong>54 African countries</strong> it was trained on, at any
+					Solaire Predictor is the forecasting engine behind
+					<a href="https://solaire.afrotomation.com" target="_blank" rel="noopener">Solaire</a>,
+					the solar-energy platform built as an M.S. capstone. Solaire calls
+					these endpoints to size demand against a country's trajectory; the
+					service also stands alone, which is what this page is for.
+				</p>
+				<p>
+					It predicts six metrics — electricity usage, GDP total, GDP growth,
+					population, population growth, and electrification rate — for any of
+					the <strong>54 African countries</strong> it was trained on, at any
 					future year. Trained on World Bank historical data with scikit-learn
 					regression, deployed standalone on the Afrotomation cluster.
 				</p>
 				<div class="cta">
 					<a class="btn primary" href="#demo">Try a prediction</a>
+					<a class="btn" href="https://solaire.afrotomation.com" target="_blank" rel="noopener">Visit Solaire</a>
 					<a class="btn" href="https://github.com/codenificient/solaire-predictor2" target="_blank" rel="noopener">View on GitHub</a>
 				</div>
 			</section>
