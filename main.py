@@ -11,14 +11,20 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Solaire Predictor API")
 
+# Browser origins allowed to call the prediction endpoints. CORS matches on
+# scheme+host+port only — a path like "/dashboard" never matches an Origin
+# header and was doing nothing, so the entries here are bare origins.
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
+    # Solaire, on Coolify
+    "https://solaire.afrotomation.com",
+    # the predictor's own landing page
+    "https://predictor.afrotomation.com",
+    # local development
     "http://localhost",
+    "http://localhost:3000",
     "http://localhost:8080",
-    "http://localhost:3000/dashboard",
-    "https://localhost:3000/dashboard",
-    "https://solaire-lemon.vercel.app"
+    # the app's old Vercel deployment, kept until that host is retired
+    "https://solaire-lemon.vercel.app",
 ]
 
 app.add_middleware(
