@@ -7,7 +7,7 @@
 		<title>Solaire Predictor — Energy &amp; economic forecasts via FastAPI</title>
 		<meta
 			name="description"
-			content="A FastAPI service that predicts a country's electricity usage, GDP, population, and electrification rate from World Bank historical data using scikit-learn regression."
+			content="A FastAPI service that predicts electricity usage, GDP, population and electrification rate for 54 African countries, from World Bank historical data using scikit-learn regression."
 		/>
 		<link
 			rel="icon"
@@ -191,8 +191,9 @@
 				<p>
 					Solaire Predictor is a small FastAPI service that predicts six metrics
 					— electricity usage, GDP total, GDP growth, population, population
-					growth, and electrification rate — for any country, at any future
-					year. Trained on World Bank historical data with scikit-learn
+					growth, and electrification rate — for any of the
+					<strong>54 African countries</strong> it was trained on, at any
+					future year. Trained on World Bank historical data with scikit-learn
 					regression, deployed standalone on the Afrotomation cluster.
 				</p>
 				<div class="cta">
@@ -204,7 +205,7 @@
 			<section id="demo">
 				<h2>Live prediction</h2>
 				<p class="sub">
-					Pick a metric, country code, and target year. The form POSTs the same
+					Pick a metric, country, and target year. The form POSTs the same
 					JSON your code would send.
 				</p>
 				<div class="demo-grid">
@@ -221,8 +222,10 @@
 							</select>
 						</div>
 						<div class="field">
-							<label for="country">Country code (ISO-3)</label>
-							<input id="country" name="country" type="text" value="BFA" autocomplete="off" spellcheck="false" maxlength="3" style="text-transform: uppercase;" />
+							<label for="country">Country (54 trained)</label>
+							<select id="country" name="country">
+								<option value="BFA">Burkina Faso (BFA)</option>
+							</select>
 						</div>
 						<div class="field">
 							<label for="year">Year</label>
@@ -389,6 +392,31 @@
 			});
 			goBtn.addEventListener("click", go);
 			updateCurl();
+
+			// Fill the country dropdown from the API rather than asking anyone to
+			// know ISO-3 codes — and so the list can only ever offer countries the
+			// models were actually trained on. Falls back to the hardcoded option
+			// already in the markup if the call fails.
+			(async () => {
+				try {
+					const res = await fetch("/countries");
+					if (!res.ok) return;
+					const { countries } = await res.json();
+					if (!Array.isArray(countries) || countries.length === 0) return;
+					const previous = countryInput.value;
+					countryInput.innerHTML = "";
+					for (const { code, name } of countries) {
+						const option = document.createElement("option");
+						option.value = code;
+						option.textContent = `${name} (${code})`;
+						countryInput.appendChild(option);
+					}
+					countryInput.value = countries.some((c) => c.code === previous) ? previous : "BFA";
+					updateCurl();
+				} catch (_) {
+					/* keep the fallback option */
+				}
+			})();
 		</script>
 	</body>
 </html>

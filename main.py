@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from model.model import predict_electricity_usage, predict_gdp_growth, predict_population, predict_electrification, predict_population_growth, predict_gdp_total
+from model.model import UnknownCountryError, supported_countries
 from model.model import __version__ as model_version
 import os
 import uvicorn
@@ -37,9 +39,34 @@ class UserInput(BaseModel):
 class PredictionOut(BaseModel):
     predicted_value: float
 
+# The models are trained on 54 African countries only. Asking for anything
+# else used to raise IndexError deep in pandas and return a bare 500; answer
+# with the supported set instead so callers can correct themselves.
+@app.exception_handler(UnknownCountryError)
+def unknown_country_handler(request: Request, exc: UnknownCountryError):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": (
+                f"No trained data for country code '{exc.country_code}'. "
+                "This model covers 54 African countries — see GET /countries."
+            ),
+            "country_code": exc.country_code,
+            "supported_count": len(supported_countries()),
+        },
+    )
+
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "model_version": model_version}
+
+
+@app.get("/countries")
+def countries():
+    """The countries the models can answer for — what the demo form offers."""
+    entries = supported_countries()
+    return {"count": len(entries), "countries": list(entries)}
 
 @app.post("/predict-electricity-usage", response_model=PredictionOut)
 def predict(payload: UserInput):
