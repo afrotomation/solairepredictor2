@@ -2,12 +2,15 @@
 name = "solaire-predictor"
 version = "0.1.5"
 description = "Solar energy and economic prediction API"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "fastapi>=0.115.0,<1.0.0",
     "uvicorn[standard]>=0.34.0,<1.0.0",
     "pydantic>=2.0.0,<3.0.0",
-    "scikit-learn==1.9.0",
+    # Pinned to the version the .pkl models were trained with — they import
+    # sklearn.ensemble._gb_losses, which newer scikit-learn removed, so a bump
+    # here breaks model loading at runtime. uv.lock already pins 1.2.2.
+    "scikit-learn==1.2.2",
     "pandas>=2.1.0,<3.0.0",
     "numpy>=1.24.0,<2.0.0",
 ]
